@@ -1,14 +1,18 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { useDatabase } from './contexts/DatabaseContext';
 import "./App.css";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
+  const { fetchNgdus } = useDatabase()
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+    const data = await fetchNgdus();
+    console.log(data);
     setGreetMsg(await invoke("greet", { name }));
   }
 

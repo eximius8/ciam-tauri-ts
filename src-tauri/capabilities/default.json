@@ -5,6 +5,34 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "opener:default"
+    "opener:default",
+    "shell:allow-kill",
+    "shell:allow-open",
+    "sql:default",
+    "sql:allow-execute",
+    "dialog:allow-open",
+    "shell:default",
+    "dialog:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "args": true,
+          "name": "sidecars/filereader",
+          "sidecar": true
+        }
+      ]
+    },
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://*"
+        },
+        {
+          "url": "http://10.1.10.111:30801/*"
+        }
+      ]
+    }
   ]
 }
