@@ -1,6 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use tauri_plugin_sql::{Migration, MigrationKind};
-use tauri::menu::{MenuBuilder};
+use tauri::menu::MenuBuilder;
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 
 
@@ -8,6 +8,13 @@ use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
+
+#[tauri::command]
+fn get_version() -> String {
+    let version = env!("CARGO_PKG_VERSION");
+    format!("сборка: {}", version)
+}
+
 
 #[tauri::command]
 fn show_about_dialog(app: &tauri::AppHandle) {
@@ -114,7 +121,7 @@ pub fn run() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, get_version])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

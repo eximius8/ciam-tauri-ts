@@ -43,6 +43,13 @@ export interface Measurement {
   dataArray: string | null; // JSON data as string
 }
 
+export interface DBInfo {
+  ngduNum: number;
+  workshopNum: number;
+  wellNum: number;
+  measurementNum: number;
+}
+
 export interface DBContextValue {
   db: Database | null;
   isDBLoading: boolean;

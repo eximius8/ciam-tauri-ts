@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import Database from '@tauri-apps/plugin-sql';
 import { DBContext } from './context';
-import { Ngdu, Workshop, Well, Measurement } from './types';
+import { Ngdu, Workshop, Well, Measurement, DBInfo } from './types';
 
 interface DBProviderProps {
   children: ReactNode;
@@ -119,6 +119,23 @@ export const DBProvider: React.FC<DBProviderProps> = ({ children }) => {
       return [];
     }
   };
+  
+  //const fetchDBInfo = async (): Promise<DBInfo> => {
+  //  if (!db) return {
+  //    ngduNum: 0,
+  //    workshopNum: 0,
+  //    wellNum: 0,
+  //    measurementNum: 0,
+  //  };
+  //  
+  //  try {
+  //      const result = await db.select<Measurement>('SELECT * FROM measurements', []);
+  //    return [result];
+  //  } catch (err) {
+  //    console.error('Failed to fetch measurements:', err);
+  //    return [];
+  //  }
+  //};
 
   const clearDB = async () => {
     try {

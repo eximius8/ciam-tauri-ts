@@ -1,54 +1,122 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import { useDatabase } from './contexts/DatabaseContext';
-import "./App.css";
+import { useState, useEffect } from 'react';
+import { 
+  Box, 
+  Tabs, 
+  Tab, 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  CssBaseline, 
+  ThemeProvider, 
+  createTheme 
+} from '@mui/material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import DevicesIcon from '@mui/icons-material/Devices';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { invoke } from '@tauri-apps/api/core';
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-  const { fetchNgdus } = useDatabase()
+// Импорт компонентов для вкладок
+import AllMeasurements from './tabs/AllMeasurements';
+import Settings from './tabs/Settings';
+/*import FileReader from './tabs/FileReader';
+import DeviceReader from './tabs/DeviceReader';
+*/
+// Создаем тему для приложения
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#379994",
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    const data = await fetchNgdus();
-    console.log(data);
-    setGreetMsg(await invoke("greet", { name }));
-  }
+// Интерфейс для TabPanel
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+// Компонент панели вкладки
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+function App() {
+  const [value, setValue] = useState(0);
+  const [version, setVersion] = useState('');
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+  useEffect(() => {
+    const getversion = async () =>{
+      setVersion(await invoke('get_version'));
+    };
+    getversion();
+  }, [])
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Приложение ЦИАМ{version && <>, {version}</>}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        
+        <Tabs 
+          value={value} 
+          onChange={handleChange} 
+          variant="fullWidth"
+          indicatorColor="secondary"
+          textColor="primary"
+          aria-label="navigation tabs"
+        >
+          <Tab icon={<DashboardIcon />} label="Все замеры" />
+          <Tab icon={<FolderOpenIcon />} label="Чтение из файлов" />
+          <Tab icon={<DevicesIcon />} label="Чтение из приборов" />
+          <Tab icon={<SettingsIcon />} label="Настройки" />
+        </Tabs>
+        
+        <TabPanel value={value} index={0}>
+         <AllMeasurements />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {/* <FileReader /> */}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          {/* <DeviceReader /> */}
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Settings />
+        </TabPanel>
+      </Box>
+    </ThemeProvider>
   );
 }
 
