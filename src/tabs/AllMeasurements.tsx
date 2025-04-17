@@ -265,7 +265,7 @@ export default function AllMeasurements() {
               {/* Здесь будет компонент с деталями о выбранных замерах */}
               <Box sx={{ mt: 2 }}>
                 <Typography variant="body2">
-                  Детальная информация о замерах будет реализована позже.
+                  Детальная информация о замере(ах).
                 </Typography>
               </Box>
             </Paper>
